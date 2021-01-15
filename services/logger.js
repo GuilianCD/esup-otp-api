@@ -3,7 +3,7 @@ var properties = require(__dirname + '/../properties/properties');
 var logs_config = require(__dirname + '/../logs/logs.json');
 var utils = require('./utils');
 
-var filename = __dirname+'/../logs/esup-otp-api-info.log';
+var filename = '/var/log/esup-otp/esup-otp-api-info.log';
 if(logs_config.path && logs_config.filename)filename = logs_config.path + logs_config.filename;
 
 var logger = new (winston.Logger)({
