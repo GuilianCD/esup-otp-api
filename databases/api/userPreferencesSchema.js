@@ -116,6 +116,34 @@ exports.schema = {
             default: properties.getEsupProperty('transports')
         }
     },
+    webauthn: {
+        active: {
+            type: Boolean,
+            default: false
+        },
+        transports: {
+            type: Array,
+            default: properties.getEsupProperty('transports')
+        },
+        registration: {
+            nonce: {
+              type: String,
+              default: null,
+            },
+            nonce_date: {
+              type: String,
+              default: null
+            },
+            logged_in_otp: {
+              type: String,
+              default: null,
+            }
+        },
+        authenticators: {
+          type: Array,
+          default: []
+        }
+    },
     last_send_message: { 
         method: { type: String },
         time: { type: Number }, 

@@ -50,5 +50,13 @@ exports.schema = {
         "transports": {
             type: Array,
         }
-    }  
+    },
+    "webauthn": {
+        "activate": {
+            type: Boolean,
+        },
+        "transports": {
+            type: Array,
+        }
+    }
 }
