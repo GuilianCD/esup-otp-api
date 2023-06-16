@@ -261,6 +261,11 @@ exports.get_user_infos = function (req, res, next) {
             deactivateRandomCodeIfNoTransport(user,data,"");//nettoyage des random_code activés sans transport
             deactivateRandomCodeIfNoTransport(user,data,"_mail"); // pour random_code_mail
 
+            // turn off webauthn if no authenticator is present (?)
+            if(user.webauthn.authenticators.length === 0) {
+                user.webauthn.active = false;
+            }
+
             data.push = user.push.device.manufacturer+' '+user.push.device.model;
             res.status(200);
             res.send({
@@ -441,6 +446,29 @@ exports.generate_method_secret = function (req, res, next) {
 };
 
 
+exports.change_method_special = function (req, res, next) {
+    if (properties.getMethod(req.params.method)) {
+        apiDb.find_user(req, res, function (user) {
+            methods[req.params.method].change_method_special(user, req, res, next);
+        });
+    } else {
+        res.status(404);
+        res.send({code: "Error", message: properties.getMessage('error', 'method_not_found')});
+    }
+};
+
+exports.delete_method_special = function (req, res, next) {
+    if (properties.getMethod(req.params.method)) {
+        apiDb.find_user(req, res, function (user) {
+            methods[req.params.method].delete_method_special(user, req, res, next);
+        });
+    } else {
+        res.status(404);
+        res.send({code: "Error", message: properties.getMessage('error', 'method_not_found')});
+    }
+};
+
+
 /**
  * Supprime l'attribut d'auth (secret key ou matrice ou bypass codes)
  *
@@ -476,6 +504,28 @@ exports.get_method_secret = function (req, res, next) {
         res.send({code: "Error", message: properties.getMessage('error', 'method_not_found')});
     }
 };
+
+/**
+	*
+	*
+	*
+	*/
+exports.get_webauthn_auth_params = function (req, res, next) {
+	apiDb.find_user(req, res, function (user) {
+		methods.webauthn.get_method_secret(user, req, res, next);
+	});
+}
+
+/**
+	*
+	*
+	*
+	*/
+exports.verify_webauthn_auth = function (req, res, next) {
+	apiDb.find_user(req, res, function (user) {
+		methods.webauthn.verify_webauthn_auth(user, req, res, next);
+	});
+}
 
 /**
  * Renvoie les méthodes activées de l'utilisateur
