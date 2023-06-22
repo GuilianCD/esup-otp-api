@@ -27,11 +27,12 @@ exports.user_activate = function(user, req, res, next) {
 	
 }
 
-// @TODO(Guilian): take values from esup.json
-const rpName = "Université Paris 1";
-const rpID = 'localhost';
+const webauthnConfig = properties.getEsupProperty("webauthn");
+
+const rpName = webauthnConfig.relying_party.name;
+const rpID = webauthnConfig.relying_party.id;
 // The URL at which registrations and authentications should occur
-const origin = `http://${rpID}`;
+const allowedOrigins = webauthnConfig.allowed_origins;
 
 /**
 	* This function creates a nonce and sends it to the user.
@@ -62,7 +63,7 @@ exports.get_method_secret = async function(user, req, res, next) {
 			nonce: nonce,
 			auths: user.webauthn.authenticators,
 			user_id: utils.get_hash(user.uid),
-			rp: properties.getEsupProperty("webauthnRelyingParty"),
+			rp: webauthnConfig.relying_party,
 		});
 	});
 }
@@ -112,7 +113,7 @@ exports.confirm_user_activate = async function (user, req, res, next) {
 		verification = await SimpleWebAuthnServer.verifyRegistrationResponse({
 			response: req.body.cred,
 			expectedChallenge: user.webauthn.registration.nonce,
-			expectedOrigin: origin,
+			expectedOrigin: allowedOrigins,
 			expectedRPID: rpID,
 			requireUserVerification: false,
 		});
@@ -314,7 +315,7 @@ exports.verify_webauthn_auth = async function(user, req, res, callbacks) {
 		verification = await SimpleWebAuthnServer.verifyAuthenticationResponse({
 			response,
 			expectedChallenge: user.webauthn.registration.nonce,
-			expectedOrigin: origin,
+			expectedOrigin: allowedOrigins,
 			expectedRPID: rpID,
 			requireUserVerification: false, //?
 			authenticator

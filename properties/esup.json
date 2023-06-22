@@ -7,6 +7,15 @@
     "users_secret":"changeit",
     "apiDb": "mongodb",
     "userDb": "mongodb",
+    "webauthn": {
+        "relying_party": {
+            "#how_to_relying_party": "The 'id' is a domain, identifying the 'server', the party that manages the authentication. It's value is important, unlike the name, which is just a displayable string.",
+            "name": "Example Relying Party",
+            "id": "example.com"
+        },
+        "#how_to_allowed_origins": "List of subdomains where webauthn can be used. Keep in mind it can't be multiple different domains.",
+        "allowed_origins": ["auth.example.com"]
+    },
     "mongodb": {
         "address": "localhost",
         "db": "test-otp",
