@@ -30,6 +30,8 @@ exports.get_available_transports = function(req, res, callback) {
             response.code = "Ok";
             response.message = properties.getMessage('success','transports_found');
             response.transports_list = result;
+
+            res.status(200);
             res.send(response);
         }
     });
@@ -54,6 +56,7 @@ exports.update_transport = function(req, res, next) {
     userDb.find_user(req, res, function(user) {
         user[properties.getEsupProperty(properties.getEsupProperty('userDb')).transport[req.params.transport]]=req.params.new_transport;
         userDb.save_user(user, function(){
+            res.status(200);
             res.send({
                 code: 'Ok',
                 message: properties.getMessage('success','update')
@@ -66,6 +69,7 @@ exports.delete_transport = function(req, res, next) {
     userDb.find_user(req, res, function(user) {
         user[properties.getEsupProperty(properties.getEsupProperty('userDb')).transport[req.params.transport]]="";
         userDb.save_user(user, function(){
+            res.status(200);
             res.send({
                 code: 'Ok',
                 message: properties.getMessage('success','method_not_found')
