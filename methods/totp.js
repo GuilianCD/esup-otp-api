@@ -64,19 +64,18 @@ exports.generate_method_secret = function(user, req, res, next) {
     user.totp.secret={base32:secret_base32,otpauth_url:secret_otpauth_url};
 
     user.save( function() {
-        const response = {
-            code: 'Ok',
-            message: user.totp.secret.base32,
-            qrCode: ''
-        };
-
         qrcode.toDataURL(user.totp.secret.otpauth_url, (err, imageUrl) => {
             if (err) {
                 logger.error('Error with QR');
                 return;
             }
-            response.qrCode = "<img src='".concat(imageUrl,"'width='164' height='164'>");
-            res.send(response);
+
+            res.status(200);
+            res.send({
+                code: 'Ok',
+                message: user.totp.secret.base32,
+                qrCode: "<img src='".concat(imageUrl,"'width='164' height='164'>")
+            });
         });
     });
 }
