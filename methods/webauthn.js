@@ -259,7 +259,9 @@ exports.verify_code = function(user, req, res, callbacks) {
 			user.webauthn.registration.logged_in_otp = null;
 			user.save(() => {
 				res.status(200);
-				res.send({});
+				res.send({
+					code: "Ok", // compat
+				});
 			});
 			return;
 		}
