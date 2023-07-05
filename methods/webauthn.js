@@ -57,6 +57,45 @@ exports.get_method_secret = async function(user, req, res, next) {
 	user.webauthn.registration.nonce = nonce;
 	user.webauthn.registration.nonce_date = (new Date()).toISOString();
 
+	const pubkeyTypes = [
+		{
+			"type": "public-key",
+			"alg": -7
+		},
+		{
+			"type": "public-key",
+			"alg": -8
+		},
+		{
+			"type": "public-key",
+			"alg": -36
+		},
+		{
+			"type": "public-key",
+			"alg": -37
+		},
+		{
+			"type": "public-key",
+			"alg": -38
+		},
+		{
+			"type": "public-key",
+			"alg": -39
+		},
+		{
+			"type": "public-key",
+			"alg": -257
+		},
+		{
+			"type": "public-key",
+			"alg": -258
+		},
+		{
+			"type": "public-key",
+			"alg": -259
+		}
+	]
+
 	user.save(() => {
 		res.status(200);
 		res.send({
@@ -64,6 +103,7 @@ exports.get_method_secret = async function(user, req, res, next) {
 			auths: user.webauthn.authenticators,
 			user_id: utils.get_hash(user.uid),
 			rp: webauthnConfig.relying_party,
+			pubKeyTypes: pubkeyTypes
 		});
 	});
 }
